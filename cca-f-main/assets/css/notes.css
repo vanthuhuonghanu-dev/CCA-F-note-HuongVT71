@@ -1,0 +1,361 @@
+/* ==========================================================================
+   notes.css — personal rich-text notes for the CCA-F study page
+   Every class is prefixed nt- (UI) or nc- (note colors) so it cannot clash
+   with assets/css/style.css. Dark mode follows html[data-theme="dark"],
+   falling back to the OS setting when no theme has been chosen yet.
+   ========================================================================== */
+
+:root {
+  --nt-ink: #1f2328;
+  --nt-surface: #ffffff;
+  --nt-line: #d0d7de;
+  --nt-muted: #5b636c;
+  --nt-hover: #f1f3f6;
+  --nt-accent: #2f5fd0;
+  --nt-weak: #b4400a;
+
+  --nc-auto: var(--nt-ink);
+  --nc-red: #c92a2a;
+  --nc-orange: #c2410c;
+  --nc-amber: #8f6b00;
+  --nc-green: #247a35;
+  --nc-teal: #0b7285;
+  --nc-blue: #1c6fd1;
+  --nc-violet: #6741d9;
+  --nc-pink: #c2255c;
+}
+
+[data-theme="dark"] {
+  --nt-ink: #e6e8ec;
+  --nt-surface: #1b1d22;
+  --nt-line: #3a3f48;
+  --nt-muted: #9aa3af;
+  --nt-hover: #262a31;
+  --nt-accent: #7aa2ff;
+  --nt-weak: #ffa94d;
+
+  --nc-red: #ff8787;
+  --nc-orange: #ffa94d;
+  --nc-amber: #ffd43b;
+  --nc-green: #69db7c;
+  --nc-teal: #66d9e8;
+  --nc-blue: #74c0fc;
+  --nc-violet: #b197fc;
+  --nc-pink: #faa2c1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --nt-ink: #e6e8ec;
+    --nt-surface: #1b1d22;
+    --nt-line: #3a3f48;
+    --nt-muted: #9aa3af;
+    --nt-hover: #262a31;
+    --nt-accent: #7aa2ff;
+    --nt-weak: #ffa94d;
+
+    --nc-red: #ff8787;
+    --nc-orange: #ffa94d;
+    --nc-amber: #ffd43b;
+    --nc-green: #69db7c;
+    --nc-teal: #66d9e8;
+    --nc-blue: #74c0fc;
+    --nc-violet: #b197fc;
+    --nc-pink: #faa2c1;
+  }
+}
+
+/* --- Note colors -----------------------------------------------------------
+   execCommand('foreColor') writes <font color="#hex">. The stored hex values
+   are the light-mode ones; these rules swap in the theme-aware color, so a
+   note stays readable when you flip between light and dark. */
+.nt-edit font[color="#1f2328"], .nt-view font[color="#1f2328"] { color: var(--nc-auto); }
+.nt-edit font[color="#c92a2a"], .nt-view font[color="#c92a2a"] { color: var(--nc-red); }
+.nt-edit font[color="#c2410c"], .nt-view font[color="#c2410c"] { color: var(--nc-orange); }
+.nt-edit font[color="#8f6b00"], .nt-view font[color="#8f6b00"] { color: var(--nc-amber); }
+.nt-edit font[color="#247a35"], .nt-view font[color="#247a35"] { color: var(--nc-green); }
+.nt-edit font[color="#0b7285"], .nt-view font[color="#0b7285"] { color: var(--nc-teal); }
+.nt-edit font[color="#1c6fd1"], .nt-view font[color="#1c6fd1"] { color: var(--nc-blue); }
+.nt-edit font[color="#6741d9"], .nt-view font[color="#6741d9"] { color: var(--nc-violet); }
+.nt-edit font[color="#c2255c"], .nt-view font[color="#c2255c"] { color: var(--nc-pink); }
+
+/* --- Scroll target offset (page has a sticky header) ----------------------- */
+.nt-anchor { scroll-margin-top: 5.5rem; }
+
+/* --- Open-note button row ------------------------------------------------- */
+.nt-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: .45rem 0 1rem;
+}
+
+.nt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  margin: 0;
+  padding: .36rem .65rem;
+  font: inherit;
+  font-size: .82rem;
+  line-height: 1.1;
+  color: var(--nt-muted);
+  background: transparent;
+  border: 1px solid var(--nt-line);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.nt-btn:hover { background: var(--nt-hover); color: var(--nt-ink); }
+.nt-btn:focus-visible,
+.nt-tool:focus-visible,
+.nt-sw:focus-visible,
+.nt-fab:focus-visible,
+.nt-x:focus-visible,
+.nt-chipf:focus-visible,
+.nt-act:focus-visible,
+.nt-go:focus-visible {
+  outline: 2px solid var(--nt-accent);
+  outline-offset: 2px;
+}
+.nt-btn[aria-expanded="true"] { background: var(--nt-hover); color: var(--nt-ink); }
+.nt-btn.has-note { color: var(--nt-ink); border-color: var(--nt-accent); }
+.nt-btn.has-note::after {
+  content: "";
+  width: .45rem;
+  height: .45rem;
+  border-radius: 50%;
+  background: var(--nt-accent);
+}
+.nt-btn.is-weak::before { content: "⚑"; color: var(--nt-weak); font-size: .9em; }
+
+/* Inline variant (tips list items, table cells, diagram chips) */
+.nt-btn.nt-inline { margin-left: .5rem; padding: .2rem .45rem; font-size: .76rem; vertical-align: middle; }
+.nt-cell { width: 1%; white-space: nowrap; text-align: right; vertical-align: middle; }
+.nt-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* --- Note panel ----------------------------------------------------------- */
+.nt-panel {
+  margin: 0 0 1rem;
+  color: var(--nt-ink);
+  background: var(--nt-surface);
+  border: 1px solid var(--nt-line);
+  border-left: 3px solid var(--nt-accent);
+  border-radius: 6px;
+  text-align: left;
+  font-weight: 400;
+}
+.nt-panel[hidden], .nt-row[hidden] { display: none; }
+li > .nt-panel { margin-top: .5rem; }
+.nt-row > td { padding-top: 0; border-top: 0; }
+.nt-row .nt-panel { margin: .1rem 0 .6rem; }
+
+.nt-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: .3rem .4rem;
+  border-bottom: 1px solid var(--nt-line);
+  opacity: .65;
+  transition: opacity .12s;
+}
+.nt-panel:focus-within .nt-tools { opacity: 1; }
+
+.nt-sep { width: 1px; align-self: stretch; margin: .2rem .3rem; background: var(--nt-line); }
+.nt-grow { flex: 1 1 auto; }
+
+.nt-tool {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2rem;
+  height: 2rem;
+  margin: 0;
+  padding: 0 .4rem;
+  font: inherit;
+  font-size: .9rem;
+  color: var(--nt-ink);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.nt-tool:hover { background: var(--nt-hover); }
+.nt-tool[aria-pressed="true"] { background: var(--nt-hover); border-color: var(--nt-line); }
+.nt-tool.is-weak-on { color: var(--nt-weak); border-color: var(--nt-weak); }
+
+.nt-sw {
+  width: 1.45rem;
+  height: 1.45rem;
+  margin: 0 1px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  display: inline-grid;
+  place-items: center;
+}
+.nt-sw::before {
+  content: "";
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--sw);
+  box-shadow: 0 0 0 1px var(--nt-line);
+}
+.nt-sw:hover::before { box-shadow: 0 0 0 2px var(--nt-ink); }
+
+.nt-status { min-width: 4.5rem; font-size: .76rem; color: var(--nt-muted); text-align: right; }
+
+.nt-edit {
+  min-height: 5.5em;
+  padding: .65rem .8rem;
+  font-size: .95rem;
+  line-height: 1.55;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+.nt-edit:empty::before { content: attr(data-ph); color: var(--nt-muted); pointer-events: none; }
+.nt-edit ul, .nt-edit ol, .nt-view ul, .nt-view ol { margin: .25rem 0 .25rem 1.3rem; padding: 0; }
+.nt-edit ul, .nt-view ul { list-style: disc; }
+.nt-edit ol, .nt-view ol { list-style: decimal; }
+.nt-edit li, .nt-view li { margin: .1rem 0; }
+.nt-edit b, .nt-edit strong, .nt-view b, .nt-view strong { font-weight: 700; }
+.nt-edit i, .nt-edit em, .nt-view i, .nt-view em { font-style: italic; }
+.nt-edit u, .nt-view u { text-decoration: underline; }
+
+/* --- Diagram component notes --------------------------------------------- */
+.nt-comps { margin: .9rem 0 .2rem; }
+.nt-comps-head { margin: 0 0 .45rem; font-size: .84rem; color: var(--nt-muted); }
+.nt-comps-row { display: flex; flex-wrap: wrap; gap: .4rem; }
+.nt-comps-panels { margin-top: .6rem; }
+.nt-comps-panels .nt-panel { margin-bottom: .6rem; }
+.nt-panel-title { padding: .45rem .8rem 0; font-size: .85rem; font-weight: 600; }
+
+/* --- Floating button + drawer -------------------------------------------- */
+.nt-fab {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem .9rem;
+  font: inherit;
+  font-size: .9rem;
+  color: var(--nt-ink);
+  background: var(--nt-surface);
+  border: 1px solid var(--nt-line);
+  border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+  cursor: pointer;
+}
+.nt-fab:hover { border-color: var(--nt-accent); }
+.nt-count {
+  min-width: 1.4rem;
+  padding: .05rem .4rem;
+  font-size: .78rem;
+  text-align: center;
+  color: var(--nt-surface);
+  background: var(--nt-accent);
+  border-radius: 999px;
+}
+.nt-count[data-zero="1"] { color: var(--nt-muted); background: var(--nt-hover); }
+
+.nt-scrim { position: fixed; inset: 0; z-index: 999; background: rgba(0, 0, 0, .4); }
+.nt-scrim[hidden] { display: none; }
+
+.nt-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  width: min(32rem, 100vw);
+  color: var(--nt-ink);
+  background: var(--nt-surface);
+  border-left: 1px solid var(--nt-line);
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform .18s ease, visibility 0s linear .18s;
+}
+.nt-drawer.is-open { transform: none; visibility: visible; transition-delay: 0s; }
+
+.nt-dhead { display: flex; align-items: baseline; gap: .6rem; padding: .9rem 1rem .5rem; }
+.nt-dhead h2 { flex: 1; margin: 0; font-size: 1.05rem; line-height: 1.3; }
+.nt-dsub { font-size: .8rem; color: var(--nt-muted); }
+.nt-x {
+  width: 2rem; height: 2rem; padding: 0; margin: 0;
+  font: inherit; font-size: 1.1rem; line-height: 1;
+  color: var(--nt-ink); background: transparent;
+  border: 1px solid var(--nt-line); border-radius: 6px; cursor: pointer;
+}
+.nt-x:hover { background: var(--nt-hover); }
+
+.nt-search {
+  display: block;
+  width: calc(100% - 2rem);
+  margin: 0 1rem .5rem;
+  padding: .5rem .65rem;
+  font: inherit;
+  font-size: .9rem;
+  color: var(--nt-ink);
+  background: var(--nt-surface);
+  border: 1px solid var(--nt-line);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.nt-search:focus-visible { outline: 2px solid var(--nt-accent); outline-offset: 1px; }
+
+.nt-filters { display: flex; flex-wrap: wrap; gap: .35rem; padding: 0 1rem .6rem; }
+.nt-chipf {
+  margin: 0; padding: .28rem .6rem;
+  font: inherit; font-size: .78rem;
+  color: var(--nt-muted); background: transparent;
+  border: 1px solid var(--nt-line); border-radius: 999px; cursor: pointer;
+}
+.nt-chipf:hover { background: var(--nt-hover); color: var(--nt-ink); }
+.nt-chipf[aria-pressed="true"] { color: var(--nt-ink); border-color: var(--nt-accent); background: var(--nt-hover); }
+
+.nt-list { flex: 1; overflow-y: auto; padding: 0 1rem 1rem; border-top: 1px solid var(--nt-line); }
+.nt-empty { margin: 1.2rem 0; font-size: .9rem; color: var(--nt-muted); }
+
+.nt-entry { padding: .85rem 0; border-bottom: 1px solid var(--nt-line); }
+.nt-entry:last-child { border-bottom: 0; }
+.nt-ehead { display: flex; align-items: center; gap: .5rem; margin-bottom: .2rem; }
+.nt-where { flex: 1; font-size: .76rem; color: var(--nt-muted); }
+.nt-flag { font-size: .76rem; color: var(--nt-weak); }
+.nt-etitle { margin: 0 0 .35rem; font-size: .95rem; line-height: 1.35; }
+.nt-view { font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
+.nt-go, .nt-act {
+  margin: 0; padding: .22rem .55rem;
+  font: inherit; font-size: .76rem;
+  color: var(--nt-ink); background: transparent;
+  border: 1px solid var(--nt-line); border-radius: 5px; cursor: pointer;
+}
+.nt-go:hover, .nt-act:hover { background: var(--nt-hover); }
+
+.nt-dfoot { padding: .7rem 1rem calc(.7rem + env(safe-area-inset-bottom)); border-top: 1px solid var(--nt-line); }
+.nt-dfoot-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.nt-import { margin-top: .6rem; padding: .6rem .7rem; font-size: .85rem; background: var(--nt-hover); border-radius: 6px; }
+.nt-import[hidden] { display: none; }
+.nt-import-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .45rem; }
+.nt-msg { min-height: 1.1em; margin: .5rem 0 0; font-size: .8rem; color: var(--nt-muted); }
+
+/* --- Touch + motion + print ---------------------------------------------- */
+@media (pointer: coarse) {
+  .nt-tool { min-width: 2.4rem; height: 2.4rem; }
+  .nt-sw { width: 1.9rem; height: 1.9rem; }
+  .nt-btn { padding: .5rem .75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nt-drawer { transition: none; }
+  .nt-tools { transition: none; }
+}
+@media print {
+  .nt-fab, .nt-drawer, .nt-scrim, .nt-bar, .nt-tools, .nt-comps-row, .nt-btn, .nt-cell { display: none !important; }
+}
